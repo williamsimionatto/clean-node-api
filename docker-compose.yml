@@ -8,6 +8,8 @@ services:
       - ./data:/data/db
     ports:
       - "27017:27017"
+    networks:
+      - node-api-network
   api:
     container_name: api-container
     image: node:12
@@ -24,3 +26,10 @@ services:
       - "9222:9222"
     links:
       - mongo
+    depends_on:
+      - mongo
+    networks:
+      - node-api-network
+networks:
+  node-api-network:
+    driver: bridge
