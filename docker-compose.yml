@@ -6,14 +6,14 @@ services:
     restart: always
     volumes:
       - ./data:/data/db
-    networks:
-      - clean-typescript-api
+    ports:
+      - "27017:27017"
   api:
     container_name: api-container
     image: node:12
     working_dir: /usr/src/clean-node-api
     restart: always
-    command: bash -c "npm install --only=prod && npm start"
+    command: bash -c "npm install --only=prod && npm run start"
     environment:
       - MONGO_URL=mongodb://mongo:27017/clean-node-api
     volumes:
@@ -22,9 +22,5 @@ services:
     ports:
       - "5050:5050"
       - "9222:9222"
-    networks:
-      - clean-typescript-api
-networks:
-  clean-typescript-api:
-volumes:
-  mongodb:
+    links:
+      - mongo
