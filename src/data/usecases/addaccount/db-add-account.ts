@@ -15,6 +15,6 @@ export class DbAddAccount implements AddAccount {
       return newAccount
     }
 
-    return undefined
+    return undefined as unknown as AccountModel
   }
 }
