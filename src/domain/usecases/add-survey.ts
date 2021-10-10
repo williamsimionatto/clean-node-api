@@ -1,5 +1,5 @@
 export interface SurverAnswer {
-  image: string
+  image?: string
   answer: string
 }
 
