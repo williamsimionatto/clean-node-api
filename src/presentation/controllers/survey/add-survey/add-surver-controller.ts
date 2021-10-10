@@ -1,4 +1,3 @@
-import { resolve } from 'path/posix'
 import { Controller, HttpRequest, HttpResponse, Validation } from './add-survey-controller-protocols'
 
 export class AddSurveyController implements Controller {
