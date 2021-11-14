@@ -74,4 +74,10 @@ describe('DBLoadAccountByToken Usecase', () => {
     const account = sut.load('any_token', 'any_role')
     expect(account).toBeNull()
   })
+
+  test('Should return an account on success', () => {
+    const { sut } = makeSut()
+    const account = sut.load('any_token', 'any_role')
+    expect(account).toEqual(makeFakeAccount())
+  })
 })
