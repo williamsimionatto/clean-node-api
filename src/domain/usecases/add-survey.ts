@@ -6,6 +6,7 @@ export interface SurverAnswer {
 export interface AddSurveyModel {
   question: string
   answers: SurverAnswer[]
+  date: Date
 }
 
 export interface AddSurvey {
