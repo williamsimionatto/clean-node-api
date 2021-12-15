@@ -1,4 +1,4 @@
-import env from '../../../../main/config/env'
+import env from '@/main/config/env'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
 import { Collection } from 'mongodb'
