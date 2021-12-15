@@ -1,7 +1,8 @@
-import { Decrypter } from '../../protocols/criptography/decrypter'
-import { AccountModel } from '../addaccount/db-add-account-protocols'
 import { DbLoadAccountByToken } from './db-load-account-by-token'
-import { LoadAccountByTokenRepository } from '../../protocols/db/account/load-account-by-token-repository'
+import { Decrypter } from '@/data/protocols/criptography/decrypter'
+import { LoadAccountByTokenRepository } from '@/data/protocols/db/account/load-account-by-token-repository'
+import { AccountModel } from '@/domain/models/account'
+
 const makeFakeAccount = (): AccountModel => ({
   id: 'valid_id',
   name: 'valid_name',
@@ -56,7 +57,7 @@ describe('DBLoadAccountByToken Usecase', () => {
 
   test('Should return null if Decrypter returns null', () => {
     const { sut, decryptStub } = makeSut()
-    jest.spyOn(decryptStub, 'decrypt').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    jest.spyOn(decryptStub, 'decrypt').mockReturnValueOnce(new Promise(resolve => resolve(null as any)))
     const account = sut.load('any_token', 'any_role')
     expect(account).toBeNull()
   })
@@ -70,7 +71,7 @@ describe('DBLoadAccountByToken Usecase', () => {
 
   test('Should return null if LoadAccountByTokenRepository returns null', () => {
     const { sut, loadAccountByTokenRepositoryStub } = makeSut()
-    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockReturnValueOnce(new Promise(resolve => resolve(null as any)))
     const account = sut.load('any_token', 'any_role')
     expect(account).toBeNull()
   })
