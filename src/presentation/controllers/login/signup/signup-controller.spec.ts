@@ -4,7 +4,7 @@ import { EmailInUseError, MissingParamError, ServerError } from '@/presentation/
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
 import { AddAccount, AddAccountParams } from '@/domain/usecases/account/add-account'
 import { Authentication, AuthenticationParams } from '@/domain/usecases/account/authentication'
-import { throwError } from '@/domain/test'
+import { throwError, mockAccountModel } from '@/domain/test'
 
 type SutTypes = {
   sut: SignUpController
@@ -16,7 +16,7 @@ type SutTypes = {
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add (account: AddAccountParams): Promise<AccountModel> {
-      return await new Promise(resolve => resolve(makeFakeAccount()))
+      return await new Promise(resolve => resolve(mockAccountModel()))
     }
   }
 
@@ -62,13 +62,6 @@ const makeAuthentication = (): Authentication => {
 
   return new AuthenticationStub()
 }
-
-const makeFakeAccount = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'valid_password'
-})
 
 describe('Sign Up Controller', () => {
   test('Should call AddAccount with correct values', async () => {

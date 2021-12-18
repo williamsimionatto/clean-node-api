@@ -2,15 +2,8 @@ import { AuthMiddleware } from './auth-middleware'
 import { HttpRequest, AccountModel } from './auth-middleware-protocols'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
 import { AccessDeniedError } from '@/presentation/errors'
-import { throwError } from '@/domain/test'
+import { throwError, mockAccountModel } from '@/domain/test'
 import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-token'
-
-const makeFakeAccount = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'hashed_password'
-})
 
 const makeFakeRequest = (): HttpRequest => ({
   headers: {
@@ -35,7 +28,7 @@ const makeSut = (role?: string): SutTypes => {
 const makeLoadAccountByTokenStub = (): LoadAccountByToken => {
   class LoadAccountByTokenStub implements LoadAccountByToken {
     async load (accessToken: string, role?: string): Promise<AccountModel> {
-      return await new Promise(resolve => resolve(makeFakeAccount()))
+      return await new Promise(resolve => resolve(mockAccountModel()))
     }
   }
 
@@ -68,7 +61,7 @@ describe('Auth Middleware', () => {
     const { sut } = makeSut()
     const httpResponde = await sut.handle(makeFakeRequest())
     expect(httpResponde.statusCode).toBe(ok({
-      accountId: 'valid_id'
+      accountId: 'any_id'
     }))
   })
 

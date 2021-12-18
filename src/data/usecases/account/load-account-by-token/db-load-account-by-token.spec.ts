@@ -1,13 +1,7 @@
 import { DbLoadAccountByToken } from './db-load-account-by-token'
 import { Decrypter, LoadAccountByTokenRepository, AccountModel } from './db-load-account-by-token-protocols'
-import { throwError } from '@/domain/test'
-
-const makeFakeAccount = (): AccountModel => ({
-  id: 'valid_id',
-  name: 'valid_name',
-  email: 'valid_email@mail.com',
-  password: 'hashed_password'
-})
+import { throwError, mockAccountModel } from '@/domain/test'
+import { mockDecrypter } from '@/data/test'
 
 type SutTypes = {
   sut: DbLoadAccountByToken
@@ -15,20 +9,10 @@ type SutTypes = {
   loadAccountByTokenRepositoryStub: LoadAccountByTokenRepository
 }
 
-const makeDecrypter = (): Decrypter => {
-  class DecrypterStub implements Decrypter {
-    async decrypt (value: string): Promise<string> {
-      return await new Promise(resolve => resolve('any_value'))
-    }
-  }
-
-  return new DecrypterStub()
-}
-
 const makeLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
   class LoadAccountByTokenRepositoryStub implements LoadAccountByTokenRepository {
     async loadByToken (accessToken: string, role?: string): Promise<AccountModel> {
-      return await new Promise(resolve => resolve(makeFakeAccount()))
+      return await new Promise(resolve => resolve(mockAccountModel()))
     }
   }
 
@@ -36,7 +20,7 @@ const makeLoadAccountByTokenRepository = (): LoadAccountByTokenRepository => {
 }
 
 const makeSut = (): SutTypes => {
-  const decryptStub = makeDecrypter()
+  const decryptStub = mockDecrypter()
   const loadAccountByTokenRepositoryStub = makeLoadAccountByTokenRepository()
   const sut = new DbLoadAccountByToken(decryptStub, loadAccountByTokenRepositoryStub)
   return {
@@ -78,7 +62,7 @@ describe('DBLoadAccountByToken Usecase', () => {
   test('Should return an account on success', () => {
     const { sut } = makeSut()
     const account = sut.load('any_token', 'any_role')
-    expect(account).toEqual(makeFakeAccount())
+    expect(account).toEqual(mockAccountModel())
   })
 
   test('Should throw if Decrypter throws', async () => {
