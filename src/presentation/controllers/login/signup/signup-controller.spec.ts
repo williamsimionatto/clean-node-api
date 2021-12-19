@@ -1,10 +1,12 @@
-import { AccountModel, HttpRequest, Validation } from './signup-controller-protocols'
+import { HttpRequest, Validation } from './signup-controller-protocols'
 import { SignUpController } from './signup-controller'
 import { EmailInUseError, MissingParamError, ServerError } from '@/presentation/errors'
 import { ok, serverError, badRequest, forbidden } from '@/presentation/helpers/http/http-helper'
-import { AddAccount, AddAccountParams } from '@/domain/usecases/account/add-account'
-import { Authentication, AuthenticationParams } from '@/domain/usecases/account/authentication'
-import { throwError, mockAccountModel } from '@/domain/test'
+import { AddAccount } from '@/domain/usecases/account/add-account'
+import { Authentication } from '@/domain/usecases/account/authentication'
+import { throwError } from '@/domain/test'
+import { mockValidation } from '@/presentation/test/mock-validation'
+import { mockAddAccount, mockAuthentication } from '@/presentation/test'
 
 type SutTypes = {
   sut: SignUpController
@@ -13,30 +15,10 @@ type SutTypes = {
   authenticationStub: Authentication
 }
 
-const makeAddAccount = (): AddAccount => {
-  class AddAccountStub implements AddAccount {
-    async add (account: AddAccountParams): Promise<AccountModel> {
-      return await new Promise(resolve => resolve(mockAccountModel()))
-    }
-  }
-
-  return new AddAccountStub()
-}
-
-const makeValidation = (): Validation => {
-  class ValidationStub implements Validation {
-    validate (input: any): Error | null {
-      return null
-    }
-  }
-
-  return new ValidationStub()
-}
-
 const makeSut = (): SutTypes => {
-  const addAccountStub = makeAddAccount()
-  const validationStub = makeValidation()
-  const authenticationStub = makeAuthentication()
+  const addAccountStub = mockAddAccount()
+  const validationStub = mockValidation()
+  const authenticationStub = mockAuthentication()
   const sut = new SignUpController(addAccountStub, validationStub, authenticationStub)
 
   return {
@@ -52,16 +34,6 @@ const makeFakeRequest = (): HttpRequest => ({
     passwordConfirmation: 'any_passwrod'
   }
 })
-
-const makeAuthentication = (): Authentication => {
-  class AuthenticationStub implements Authentication {
-    async auth (authentication: AuthenticationParams): Promise<string> {
-      return await new Promise(resolve => resolve('any_token'))
-    }
-  }
-
-  return new AuthenticationStub()
-}
 
 describe('Sign Up Controller', () => {
   test('Should call AddAccount with correct values', async () => {
