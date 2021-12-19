@@ -24,7 +24,7 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository {
   }
 
   async loadBySurveyId (surveyId: string, accountId: string): Promise<SurveyResultModel> {
-    const surveyResultCollection = MongoHelper.getCollection('surveyResults')
+    const surveyResultCollection = await MongoHelper.getCollection('surveyResults')
     const query = new QueryBuilder()
       .match({
         surveyId: new ObjectId(surveyId)
